@@ -15,10 +15,10 @@ public class TestConnection {
             System.out.println("ID\t\tLAST NAME\t\tFIRST NAME\t\tADDRESS\t\tCITY");
             while(rt.next()){
                 System.out.println(rt.getString("PersonID"));
-                System.out.println("\t\t"+rt.getString("LastName"));
-                System.out.println("\t\t"+rt.getString("FirstName"));
-                System.out.println("\t\t"+rt.getString("Address"));
-                System.out.println("\t\t"+rt.getString("City"));
+                System.out.print("\t\t"+rt.getString("LastName"));
+                System.out.print("\t\t"+rt.getString("FirstName"));
+                System.out.print("\t\t"+rt.getString("Address"));
+                System.out.print("\t\t"+rt.getString("City"));
             }
             rt.close();
             st.close();
