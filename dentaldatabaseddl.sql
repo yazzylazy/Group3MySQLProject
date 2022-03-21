@@ -1,6 +1,6 @@
 CREATE TABLE User (
 	UiD VARCHAR(20) NOT NULL,
-    Password VARCHAR(20) NOT NULL,
+    UserPassword VARCHAR(20) NOT NULL,
     Role VARCHAR(20) NOT NULL,
     PRIMARY KEY (UiD)
 );
