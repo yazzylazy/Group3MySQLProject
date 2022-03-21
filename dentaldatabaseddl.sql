@@ -18,6 +18,141 @@ CREATE TABLE UserInformation (
     Gender CHAR(5),
     Email VARCHAR(40) NOT NULL,
     SSN INTEGER(9) NOT NULL,
-    PRIMARY KEY (UiD),
     FOREIGN KEY (UiD) REFERENCES User(UiD)
+);
+
+CREATE TABLE Patient (
+PiD VARCHAR(20) NOT NULL,
+UiD VARCHAR(20) NOT NULL,
+Insurance VARCHAR(20),
+Record VARCHAR(20) NOT NULL,
+ResponsiblePartyUiD VARCHAR(20),
+PRIMARY KEY(PiD),
+FOREIGN KEY(UiD) REFERENCES User(UiD)
+);
+
+CREATE TABLE Record (
+RecordID VARCHAR(20) NOT NULL,
+PiD VARCHAR(20) NOT NULL,
+Details VARCHAR(100),
+PRIMARY KEY(RecordID),
+FOREIGN KEY(PiD) REFERENCES Patient(PiD)
+);
+
+CREATE TABLE Review (
+ReviewID VARCHAR(20) NOT NULL,
+Professionalism VARCHAR(100),
+Communication VARCHAR(100),
+Cleanliness VARCHAR(100),
+Valuecomment VARCHAR(100),
+PiD VARCHAR(20) NOT NULL,
+PRIMARY KEY(ReviewID),
+FOREIGN KEY(PiD) REFERENCES Patient(PiD)
+);
+
+CREATE TABLE Payment (
+BillID VARCHAR(20) NOT NULL,
+ClaimID VARCHAR(20),
+InvoiceID VARCHAR(20) NOT NULL,
+PaymentType VARCHAR(20) NOT NULL,
+TotalAmount INTEGER(10) NOT NULL,
+PRIMARY KEY(BillID),
+FOREIGN KEY(ClaimID) REFERENCES InsuranceClaim(ClaimID),
+FOREIGN KEY(InvoiceID) REFERENCES Invoice(InvoiceID)
+);
+
+CREATE TABLE InsuranceClaim (
+ClaimID VARCHAR(20) NOT NULL,
+EmployerName VARCHAR(30),
+PlanNumber VARCHAR(15) NOT NULL,
+PiD VARCHAR(20) NOT NULL,
+Deductible INTEGER(10),
+PlanAmount INTEGER(10),
+Total INTEGER(10) NOT NULL,
+PRIMARY KEY(ClaimID),
+FOREIGN KEY(PiD) REFERENCES Patient(PiD)
+);
+
+CREATE TABLE Invoice (
+InvoiceID VARCHAR(20) NOT NULL,
+InvoiceDate DATE NOT NULL,
+PiD VARCHAR(20) NOT NULL,
+PatientInsurance VARCHAR(20),
+PatientCharge INTEGER(10),
+InsuranceCharge INTEGER(10),
+Total INTEGER(10) NOT NULL,
+Discount INTEGER(10),
+Penalty INTEGER(10),
+PRIMARY KEY(InvoiceID),
+FOREIGN KEY(PiD) REFERENCES Patient(PiD)
+);
+
+CREATE TABLE EMPLOYEE (
+EiD VARCHAR(20) NOT NULL,
+UiD VARCHAR(20) NOT NULL,
+Role VARCHAR(10) NOT NULL,
+EmployeeType VARCHAR(10) NOT NULL,
+Salary INTEGER(10) NOT NULL,
+PRIMARY KEY(EiD),
+FOREIGN KEY(UiD) REFERENCES User(UiD)
+);
+
+CREATE TABLE BranchID(
+BranchID VARCHAR(20) NOT NULL,
+Address VARCHAR(20) NOT NULL,
+Province VARCHAR(20) NOT NULL,
+BranchManager VARCHAR(20) NOT NULL,
+PRIMARY KEY(BranchID),
+FOREIGN KEY(BranchManager) REFERENCES Employee(EiD) 
+);
+
+CREATE TABLE Appointment(
+AppointmentID VARCHAR(20) NOT NULL,
+PiD VARCHAR(20) NOT NULL,
+EiD VARCHAR(20) NOT NULL,
+AppointmentDate DATE NOT NULL,
+StartTime TIME NOT NULL,
+EndTime TIME NOT NULL,
+AppointmentType VARCHAR(20),
+AppointmentStatus VARCHAR(10),
+RoomNumber VARCHAR(5),
+InvoiceID VARCHAR(20),
+PRIMARY KEY(AppointmentID),
+FOREIGN KEY(PiD) REFERENCES Patient(PiD),
+FOREIGN KEY(EiD) REFERENCES Employee(EiD)
+);
+
+CREATE TABLE Treatment(
+AppointmentProcedureID VARCHAR(20) NOT NULL,
+AppointmentType VARCHAR(20),
+Medication VARCHAR(20),
+Symptoms VARCHAR(20),
+ToothNumber VARCHAR(5),
+Comments VARCHAR(50),
+FOREIGN KEY(AppointmentProcedureID) References AppointmentProcedure(AppointmentProcedureID)
+);
+
+CREATE TABLE AppointmentProcedure(
+AppointmentProcedureID VARCHAR(20) NOT NULL,
+PiD VARCHAR(20) NOT NULL,
+AppointmentProcedureDate DATE,
+ProcedureCode VARCHAR(8) NOT NULL,
+ProcedureType VARCHAR(20),
+Description VARCHAR(50),
+ToothNumber VARCHAR(5),
+AmountofProcedure INTEGER(10),
+InvoiceID VARCHAR(20),
+FeeID VARCHAR(20),
+PRIMARY KEY(AppointmentProcedureID),
+FOREIGN KEY(PiD) REFERENCES Patient(PiD),
+FOREIGN KEY(InvoiceID) REFERENCES Invoice(InvoiceID),
+FOREIGN KEY(FeeID) REFERENCES FeeCharge(FeeID)
+);
+
+CREATE TABLE FeeCharge(
+FeeID VARCHAR(10) NOT NULL,
+FeeCode VARCHAR(10) NOT NULL,
+FeeChargeProcedure VARCHAR(20),
+Charge INTEGER(10),
+PRIMARY KEY(FeeID)
 );
