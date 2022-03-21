@@ -1,0 +1,23 @@
+CREATE TABLE User (
+	UiD VARCHAR(20) NOT NULL,
+    Password VARCHAR(20) NOT NULL,
+    Role VARCHAR(20) NOT NULL,
+    PRIMARY KEY (UiD)
+);
+    
+CREATE TABLE UserInformation (
+	UiD VARCHAR(20) NOT NULL,
+    Address VARCHAR(50),
+    City VARCHAR(20),
+    Province VARCHAR(20),
+    fName VARCHAR(20) NOT NULL,
+    mName VARCHAR(20),
+    lName VARCHAR(20) NOT NULL,
+    DateOfBirth DATE NOT NULL,
+    PhoneNumber INTEGER(10) NOT NULL,
+    Gender CHAR(5),
+    Email VARCHAR(40) NOT NULL,
+    SSN INTEGER(9) NOT NULL,
+    PRIMARY KEY (UiD),
+    FOREIGN KEY (UiD) REFERENCES User(UiD)
+);
