@@ -1,0 +1,15 @@
+<doctype html="">
+    <title>Patient Info</title>
+<h2>Patient Info</h2>
+</doctype>
+
+{% from "_formhelpers.html" import render_field %}
+<form method="post">
+  <dl>
+    {{ render_field(form.select) }}
+    <p>
+    {{ render_field(form.search) }}
+  </p></dl>
+  <p><input type="submit" value="Search">
+</p></form>
+</doctype>
