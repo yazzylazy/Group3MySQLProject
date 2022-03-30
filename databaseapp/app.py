@@ -18,18 +18,18 @@ _role = ''
 
 
 @app.route('/editpatients', methods=['GET', 'POST'])
-def index():
+def patientinfo():
     search = PatientSearchForm(request.form)
     if request.method == 'POST':
         return search_results(search)
-    return redirect('/patientinfo')
+    return render_template('patientinfo.html', form=search)
 
 @app.route('/results')
 def search_results(search):
     results = []
     search_string = search.data['search']
     if search.data['search'] == '':
-        qry = db_session.query(Album)
+        qry = db_session.query(Ottawa)
         results = qry.all()
     if not results:
         flash('No results found!')
