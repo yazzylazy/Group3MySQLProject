@@ -1,25 +1,49 @@
 <doctype html="">
-    <title>Patient Info</title>
-<h2>Patient Info</h2>
-</doctype>
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+</style>
+</head>
+<body>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class="flashes">
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+<h1>Patient Info</h1>
 
-{% from "_formhelpers.html" import render_field %}
-<form method="post">
-  <dl>
-    {{ render_field(form.select) }}
-    <p>
-    {{ render_field(form.search) }}
-  </p></dl>
-  <p><input type="submit" value="Search">
-</p></form>
-</doctype>
+
+<table style = " border: 1px solid black">
+    <thead>
+    <tr>
+        <th>UiD</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>Province</th>
+        <th>fName</th>
+        <th>mName</th>
+        <th>lName</th>
+        <th>DateOfBirth</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>SSN</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+                <td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+                <td>{{row[7]}}</td>
+                <td>{{row[8]}}</td>
+                <td>{{row[9]}}</td>
+                <td>{{row[10]}}</td>
+                <td>{{row[11]}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

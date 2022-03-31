@@ -19,25 +19,11 @@ _role = ''
 
 @app.route('/editpatients', methods=['GET', 'POST'])
 def patientinfo():
-    search = PatientSearchForm(request.form)
-    if request.method == 'POST':
-        return search_results(search)
-    return render_template('patientinfo.html', form=search)
-
-@app.route('/results')
-def search_results(search):
-    results = []
-    search_string = search.data['search']
-    if search.data['search'] == '':
-        qry = db_session.query(Ottawa)
-        results = qry.all()
-    if not results:
-        flash('No results found!')
-        return redirect('/')
-    else:
-        # display results
-        return render_template('results.html', results=results)
-
+    conn = mysql.connect()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM userinformation where UiD in (select uid from user where role = "patient") ')
+    data = cur.fetchall()
+    return render_template('patientinfo.html', data=data)
 
 
 @app.route('/logout')
