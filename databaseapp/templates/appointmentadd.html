@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+             
+        <title>Add Appointment</title>
+             
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous"
+        />
+        <link href="../static/css/signup.css" rel="stylesheet" />
+    </head>
+ 
+    <body>
+             
+        <div class="container">
+                     
+            <div class="header">
+                             
+                <nav
+                    class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom"
+                >
+                    <a
+                        href="/"
+                        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none"
+                    >
+                        <span class="fs-4">Dental Database</span>
+                    </a>
+ 
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Log Out</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/receptionistlogin" class="nav-link">Go back</a>
+                        </li>
+                    </ul>
+                                             
+                </nav>
+                         
+            </div>
+            <div class="p-5 mb-4 bg-light rounded-3">
+                <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold text-center">Add appointment</h1>
+                    <form id="form-signin" action="/api/addappointment" method="POST">
+                                <label for="inputPID" class="sr-only">Patient ID</label>
+                                <input
+                            type="name"
+                            name="inputPID"
+                            id="inputPID"
+                            class="form-control"
+                            placeholder="Patient ID"
+                            required
+                            autofocus
+                        />
+                        <label for="inputEID" class="sr-only">Employee ID</label>
+                                <input
+                            type="name"
+                            name="inputEID"
+                            id="inputEID"
+                            class="form-control"
+                            placeholder="Employee ID"
+                            required
+                            autofocus
+                        />
+                        <label for="inputAppointmentDate" class="sr-only">Appointment Date</label>
+                                <input
+                            type="date"
+                            name="inputAppointmentDate"
+                            id="inputAppointmentDate"
+                            class="form-control"
+                            placeholder="Appointment Date"
+                            required
+                            autofocus
+                        />
+                        <label for="inputStartTime" class="sr-only">Start Time</label>
+                                <input
+                            type="name"
+                            name="inputStartTime"
+                            id="inputStartTime"
+                            class="form-control"
+                            placeholder="Start Time (00:00)"
+                            required
+                            autofocus
+                        />
+                        <label for="inputEndTime" class="sr-only">End Time</label>
+                                <input
+                            type="name"
+                            name="inputEndTime"
+                            id="inputEndTime"
+                            class="form-control"
+                            placeholder="End Time (00:00)"
+                            required
+                            autofocus
+                        />
+                        <label for="inputAppointmentType" class="sr-only">Appointment Type</label>
+                                <input
+                            type="name"
+                            name="inputAppointmentType"
+                            id="inputAppointmentType"
+                            class="form-control"
+                            placeholder="Appointment Type"
+                            required
+                            autofocus
+                        />
+                        <label for="inputAppointmentStatus" class="sr-only">Appointment Status</label>
+                                <input
+                            type="name"
+                            name="inputAppointmentStatus"
+                            id="inputAppointmentStatus"
+                            class="form-control"
+                            placeholder="Appointment Status"
+                            required
+                            autofocus
+                        />
+
+                                <label for="inputRoomNumber" class="sr-only">Room Number</label>
+                                <input
+                            type="name"
+                            name="inputRoomNumber"
+                            id="inputRoomNumber"
+                            class="form-control"
+                            placeholder="Room Number"
+                            required
+                        />
+                        <label for="inputInvoiceID" class="sr-only">Invoice ID</label>
+                                <input
+                            type="name"
+                            name="inputInvoiceID"
+                            id="inputInvoiceID"
+                            class="form-control"
+                            placeholder="Invoice ID"
+                            required
+                            autofocus
+                        />
+                                          <button
+                            class="btn btn-lg btn-primary btn-block"
+                            type="submit"
+                        >
+                            Add
+                        </button>
+                               
+                    </form>
+                </div>
+            </div>
+                     
+            <footer class="footer">
+                             
+                <p>&copy; Group 3 2022</p>
+                         
+            </footer>
+ 
+                 
+        </div>
+
+    </body>
+</html>

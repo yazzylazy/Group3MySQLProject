@@ -1,6 +1,7 @@
 from flask import *
 from flaskext.mysql import MySQL
 from forms import PatientSearchForm
+import random, string
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -17,13 +18,123 @@ _password = ''
 _role = ''
 
 
+@app.route('/viewappointments', methods=['GET', 'POST'])
+def appointmentview():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM appointment where appointmentstatus != 'cancelled'")
+        userslist = cursor.fetchall()
+        return render_template('appointments.html',userslist=userslist)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+
+@app.route("/updateappointment",methods=["POST","GET"])
+def updateappointment():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        if request.method == 'POST':
+            field = request.form['field'] 
+            value = request.form['value']
+            editid = request.form['id']
+             
+            if field == 'employeeid':
+               sql = "UPDATE appointment SET eid=%s WHERE appointmentid=%s"
+            if field == 'appointmentdate':        
+                sql = "UPDATE appointment SET appointmentdate=%s WHERE appointmentid=%s"
+            if field == 'starttime':        
+                sql = "UPDATE appointment SET starttime=%s WHERE appointmentid=%s"
+            if field == 'endtime':        
+                sql = "UPDATE appointment SET endtime=%s WHERE appointmentid=%s"
+            if field == 'appointmenttype':        
+                sql = "UPDATE appointment SET appointmenttype=%s WHERE appointmentid=%s"
+            if field == 'appointmentstatus':        
+                sql = "UPDATE appointment SET appointmentstatus=%s WHERE appointmentid=%s"
+            if field == 'roomnum':        
+                sql = "UPDATE appointment SET roomnumber=%s WHERE appointmentid=%s"
+            if field == 'invoiceid':        
+                sql = "UPDATE appointment SET invoiceid=%s WHERE appointmentid=%s"
+ 
+            data = (value, editid)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            success = 1
+        return jsonify(success)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+
+
 @app.route('/editpatients', methods=['GET', 'POST'])
 def patientinfo():
-    conn = mysql.connect()
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM userinformation where UiD in (select uid from user where role = "patient") ')
-    data = cur.fetchall()
-    return render_template('patientinfo.html', data=data)
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM userinformation where UiD in (select uid from user where role = "patient") ')
+        userslist = cursor.fetchall()
+        return render_template('patientinfo.html',userslist=userslist)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+
+@app.route("/update",methods=["POST","GET"])
+def update():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        if request.method == 'POST':
+            field = request.form['field'] 
+            value = request.form['value']
+            editid = request.form['id']
+             
+            if field == 'address':
+               sql = "UPDATE userinformation SET address=%s WHERE uid=%s"
+            if field == 'city':        
+                sql = "UPDATE userinformation SET city=%s WHERE uid=%s"
+            if field == 'province':        
+                sql = "UPDATE userinformation SET province=%s WHERE uid=%s"
+            if field == 'fname':        
+                sql = "UPDATE userinformation SET fname=%s WHERE uid=%s"
+            if field == 'mname':        
+                sql = "UPDATE userinformation SET mname=%s WHERE uid=%s"
+            if field == 'lname':        
+                sql = "UPDATE userinformation SET lname=%s WHERE uid=%s"
+            if field == 'dob':        
+                sql = "UPDATE userinformation SET dateofbirth=%s WHERE uid=%s"
+            if field == 'phone':        
+                sql = "UPDATE userinformation SET phone=%s WHERE uid=%s"
+            if field == 'gender':        
+                sql = "UPDATE userinformation SET gender=%s WHERE uid=%s"
+            if field == 'email':        
+                sql = "UPDATE userinformation SET email=%s WHERE uid=%s"
+            if field == 'ssn':        
+                sql = "UPDATE userinformation SET ssn=%s WHERE uid=%s"
+ 
+            data = (value, editid)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            success = 1
+        return jsonify(success)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
 
 
 @app.route('/logout')
@@ -42,6 +153,10 @@ def main():
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+@app.route('/addappointment')
+def addappointment():
+    return render_template('appointmentadd.html')
 
 @app.route('/login')
 def login():
@@ -80,7 +195,7 @@ def validatelogin():
 def signUp():
     # read the posted values from the UI
     _name = request.form['inputName']
-    _role = request.form['inputRole']
+    _role = 'Patient'
     _password = request.form['inputPassword'] 
     _address = request.form['inputAddress']
     _city = request.form['inputCity']
@@ -101,11 +216,37 @@ def signUp():
     	data = cursor.fetchall()
     	if len(data) == 0:
     		conn.commit()
-    		return json.dumps({'message':'User created successfully !'})
+    		return redirect('/patientinfo')
     	else:
-    		return json.dumps({'error':str(data[0])})
+    		return json.dumps({'error':str(data[0])}), {"Refresh": "2; /receptionistlogin"}
     else:
-        return json.dumps({'html':'<span>Enter the required fields</span>'})
+        return json.dumps({'html':'<span>Enter the required fields</span>'}), {"Refresh": "2; /receptionistlogin"}
+
+
+@app.route('/api/addappointment',methods=['POST'])
+def appointmentadder():
+    _appointmentID = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    # read the posted values from the UI
+    _pid = request.form['inputPID']
+    _eid = request.form['inputEID']
+    _appointmentdate = request.form['inputAppointmentDate'] 
+    _starttime = request.form['inputStartTime']
+    _endtime = request.form['inputEndTime']
+    _appointmenttype = request.form['inputAppointmentType']
+    _appointmentstatus = request.form['inputAppointmentStatus']
+    _roomnumber = request.form['inputRoomNumber']
+    _invoiceid = request.form['inputInvoiceID']
+    # validate the received values
+    if _pid and _eid and _appointmentdate and _starttime and _endtime and _appointmenttype and _appointmentstatus and _roomnumber and _invoiceid:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        sql = (_appointmentID,_pid,_eid,_appointmentdate,_starttime,_endtime,_appointmenttype,_appointmentstatus,_roomnumber,_invoiceid)
+        cursor.execute('insert into appointment values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', sql)
+        conn.commit()
+        return redirect('/viewappointments')
+    else:
+        return json.dumps({'html':'<span>Enter the required fields</span>'}), {"Refresh": "2; /receptionistlogin"}
+
 
 
 if __name__ == "__main__":

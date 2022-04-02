@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>Patient Info</title>
+<title>Appointment Info</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />    
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script type='text/javascript'>
@@ -32,7 +32,7 @@ $(document).ready(function(){
   $(this).prev('.edit').text(value);
  
   $.ajax({
-   url: '/update',
+   url: '/updateappointment',
    type: 'post',
    data: { field:field_name, value:value, id:edit_id },
    success:function(response){
@@ -58,70 +58,59 @@ $(document).ready(function(){
       </div>
 <div class="container" >
     <div class="row" style="padding:50px;">
-        <p><h1>Patient List (Click a field to edit)</h1></p>
+        <p><h1>Appointment List (Click a field to edit)</h1></p>
+        <p><h2>Cancel an appointment by changing status to cancelled and refreshing</h2></p>
         <table width='100%' border='0'>
          <tr>
-          <th width='10%'>UiD</th>
-          <th width='40%'>Address</th>
-          <th width='40%'>City</th>
-          <th width='40%'>Province</th>
-          <th width='40%'>First Name</th>
-          <th width='40%'>Middle Name</th>
-          <th width='40%'>Last Name</th>
-          <th width='40%'>DOB</th>
-          <th width='40%'>Phone #</th>
-          <th width='40%'>Gender</th>
-          <th width='40%'>Email</th>
-          <th width='40%'>SSN</th>
+          <th width='10%'>AppointmentID</th>
+          <th width='40%'>Patient ID</th>
+          <th width='40%'>Employee ID</th>
+          <th width='40%'>Appointment Date</th>
+          <th width='40%'>Start Time</th>
+          <th width='40%'>End Time</th>
+          <th width='40%'>Appointment Type</th>
+          <th width='40%'>Appointment Status</th>
+          <th width='40%'>Room #</th>
+          <th width='40%'>Invoice ID</th>
          </tr>
          {% for row in userslist %}    
          <tr>
           <td>{{row[0]}}</td>
           <td> 
-            <div class='edit' > {{row[1]}}</div> 
-            <input type='text' class='txtedit' value='{{row[1]}}' id='address_{{row[0]}}' >
+            {{row[1]}}
           </td>
           <td> 
            <div class='edit' >{{row[2]}} </div> 
-           <input type='text' class='txtedit' value='{{row[2]}}' id='city_{{row[0]}}' >
+           <input type='text' class='txtedit' value='{{row[2]}}' id='employeeid_{{row[0]}}' >
           </td>
           <td> 
             <div class='edit' > {{row[3]}}</div> 
-            <input type='text' class='txtedit' value='{{row[3]}}' id='province_{{row[0]}}' >
+            <input type='text' class='txtedit' value='{{row[3]}}' id='appointmentdate_{{row[0]}}' >
           </td>
           <td> 
             <div class='edit' > {{row[4]}}</div> 
-            <input type='text' class='txtedit' value='{{row[4]}}' id='fname_{{row[0]}}' >
+            <input type='text' class='txtedit' value='{{row[4]}}' id='starttime_{{row[0]}}' >
           </td>
           <td> 
             <div class='edit' > {{row[5]}}</div> 
-            <input type='text' class='txtedit' value='{{row[5]}}' id='mname_{{row[0]}}' >
+            <input type='text' class='txtedit' value='{{row[5]}}' id='endtime_{{row[0]}}' >
           </td>
           <td> 
             <div class='edit' > {{row[6]}}</div> 
-            <input type='text' class='txtedit' value='{{row[6]}}' id='lname_{{row[0]}}' >
+            <input type='text' class='txtedit' value='{{row[6]}}' id='appointmenttype_{{row[0]}}' >
           </td>
           <td> 
             <div class='edit' > {{row[7]}}</div> 
-            <input type='text' class='txtedit' value='{{row[7]}}' id='dob_{{row[0]}}' >
+            <input type='text' class='txtedit' value='{{row[7]}}' id='appointmentstatus_{{row[0]}}' >
           </td>
           <td> 
             <div class='edit' > {{row[8]}}</div> 
-            <input type='text' class='txtedit' value='{{row[8]}}' id='phone_{{row[0]}}' >
+            <input type='text' class='txtedit' value='{{row[8]}}' id='roomnum_{{row[0]}}' >
           </td>
           <td> 
             <div class='edit' > {{row[9]}}</div> 
-            <input type='text' class='txtedit' value='{{row[9]}}' id='gender_{{row[0]}}' >
+            <input type='text' class='txtedit' value='{{row[9]}}' id='invoiceid_{{row[0]}}' >
           </td>
-          <td> 
-            <div class='edit' > {{row[10]}}</div> 
-            <input type='text' class='txtedit' value='{{row[10]}}' id='email_{{row[0]}}' >
-          </td>
-          <td> 
-            <div class='edit' > {{row[11]}}</div> 
-            <input type='text' class='txtedit' value='{{row[11]}}' id='ssn_{{row[0]}}' >
-          </td>
-
          </tr>
          {% endfor %} 
         </table>
