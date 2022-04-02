@@ -1,6 +1,5 @@
 from flask import *
 from flaskext.mysql import MySQL
-from forms import PatientSearchForm
 import random, string
 
 app = Flask(__name__)
@@ -26,6 +25,37 @@ def appointmentview():
         cursor.execute("SELECT * FROM appointment where appointmentstatus != 'cancelled'")
         userslist = cursor.fetchall()
         return render_template('appointments.html',userslist=userslist)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+
+@app.route('/viewappointments2', methods=['GET', 'POST'])
+def appointmentview2():
+    try:
+        global _name
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM appointment where appointmentstatus != 'cancelled' and eid = %s", _name)
+        userslist = cursor.fetchall()
+        return render_template('appointments2.html',userslist=userslist)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+@app.route('/viewappointments3', methods=['GET', 'POST'])
+def appointmentview3():
+    try:
+        global _name
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM appointment where pid = %s", _name)
+        userslist = cursor.fetchall()
+        return render_template('appointments3.html',userslist=userslist)
     except Exception as e:
         print(e)
     finally:
@@ -90,6 +120,66 @@ def patientinfo():
         conn.close()
 
 
+@app.route('/patientrecord', methods=['GET', 'POST'])
+def patientinfo2():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute('select pid, fName, mName, lName, gender, dateofbirth, details from record,userinformation where record.pid = userinformation.uid')
+        userslist = cursor.fetchall()
+        return render_template('patientrecord.html',userslist=userslist)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+@app.route('/patientrecord2', methods=['GET', 'POST'])
+def patientinfo3():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute('select pid, fName, mName, lName, gender, dateofbirth, details from record,userinformation where record.pid = userinformation.uid and record.pid =%s', _name)
+        userslist = cursor.fetchall()
+        return render_template('patientrecord2.html',userslist=userslist)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+
+
+
+
+@app.route("/update2",methods=["POST","GET"])
+def update2():
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        if request.method == 'POST':
+            field = request.form['field'] 
+            value = request.form['value']
+            editid = request.form['id']
+             
+            if field == 'details':
+               sql = "UPDATE record SET details=%s WHERE pid=%s"
+ 
+            data = (value, editid)
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute(sql, data)
+            conn.commit()
+            success = 1
+        return jsonify(success)
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close() 
+        conn.close()
+
+
+
 @app.route("/update",methods=["POST","GET"])
 def update():
     try:
@@ -146,6 +236,16 @@ def logout():
 def receptionistlogin():
     return render_template('receptionistlogin.html')
 
+
+@app.route("/patientlogin")
+def patientlogin():
+    return render_template('patientlogin.html')
+
+@app.route("/dentistlogin")
+def dentistlogin():
+    return render_template('dentistlogin.html')
+
+
 @app.route("/")
 def main():
 	return render_template('index.html')
@@ -158,6 +258,10 @@ def signup():
 def addappointment():
     return render_template('appointmentadd.html')
 
+@app.route('/requestappointment')
+def requestappointment():
+    return render_template('requestappointment.html')
+
 @app.route('/login')
 def login():
 	return render_template('login.html')
@@ -165,10 +269,12 @@ def login():
 @app.route('/validatelogin',methods=['POST'])
 def validatelogin():
     # read the posted values from the UI
+    global _name
     _name = request.form['username']
     _password = request.form['password'] 
     # validate the received values
     if _name and _password:
+        print(_name)
         conn = mysql.connect()
         cursor = conn.cursor()
         cursor.callproc('login',(_name,_password))
@@ -176,17 +282,17 @@ def validatelogin():
         if str(data[0]) == "(1, 'Patient')":
             conn.commit()
             _role = 'Patient'
-            return json.dumps({'message':'Patient signed in successfully !'})
+            return redirect('/patientlogin')
         elif str(data[0]) == "(1, 'Dentist')":
             conn.commit()
             _role = 'Dentist'
-            return json.dumps({'message':'Dentist signed in successfully !'})
+            return redirect('/dentistlogin')
         elif str(data[0]) == "(1, 'Receptionist')":
             conn.commit()
             _role = 'Receptionist'
             return redirect('/receptionistlogin')
         else:
-            return json.dumps({'error':'Please ensure your are inputting the correct username and password (case sensitive)!'})
+            return json.dumps({'error':'Please ensure your are inputting the correct username and password (case sensitive)!'}),  {"Refresh": "2; /"}
     else:
         return json.dumps({'html':'<span>Enter the required fields</span>'})
 
@@ -247,6 +353,30 @@ def appointmentadder():
     else:
         return json.dumps({'html':'<span>Enter the required fields</span>'}), {"Refresh": "2; /receptionistlogin"}
 
+@app.route('/api/requestappointment',methods=['POST'])
+def requestappointment2():
+    global _name
+    _appointmentID = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    # read the posted values from the UI
+    _pid = _name
+    _eid = "pending"
+    _appointmentdate = request.form['inputAppointmentDate'] 
+    _starttime = request.form['inputStartTime']
+    _endtime = "pending"
+    _appointmenttype = "pending"
+    _appointmentstatus = "not approved yet"
+    _roomnumber = "pending"
+    _invoiceid = "pending"
+    # validate the received values
+    if _appointmentdate and _starttime:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        sql = (_appointmentID,_pid,_eid,_appointmentdate,_starttime,_endtime,_appointmenttype,_appointmentstatus,_roomnumber,_invoiceid)
+        cursor.execute('insert into appointment values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', sql)
+        conn.commit()
+        return redirect('/viewappointments3')
+    else:
+        return json.dumps({'html':'<span>Enter the required fields</span>'}), {"Refresh": "2; /patientlogin"}
 
 
 if __name__ == "__main__":
