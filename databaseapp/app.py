@@ -316,15 +316,19 @@ def signUp():
     _ssn = request.form['inputSSN']
     # validate the received values
     if _name and _email and _password and _role and _address and _city and _province and _fName and _mName and _lName and _dateOfBirth and _phoneNumber and _gender and _email and _ssn:
-    	conn = mysql.connect()
-    	cursor = conn.cursor()
-    	cursor.callproc('createUser',(_name,_role,_password, _address, _city, _province, _fName, _mName, _lName, _dateOfBirth, _phoneNumber, _gender, _email, _ssn))
-    	data = cursor.fetchall()
-    	if len(data) == 0:
-    		conn.commit()
-    		return redirect('/patientinfo')
-    	else:
-    		return json.dumps({'error':str(data[0])}), {"Refresh": "2; /receptionistlogin"}
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.callproc('createUser',(_name,_role,_password, _address, _city, _province, _fName, _mName, _lName, _dateOfBirth, _phoneNumber, _gender, _email, _ssn))
+        sql = (_name, _name, _name)
+        sql2 = (_name,_name)
+        cursor.execute("insert into patient(pid,uid,record) values(%s,%s,%s)",sql)
+        cursor.execute("insert into record(recordid, pid) values(%s,%s)", sql2)
+        data = cursor.fetchall()
+        if len(data) == 0:
+            conn.commit()
+            return redirect('/editpatients')
+        else:
+            return json.dumps({'error':str(data[0])}), {"Refresh": "2; /receptionistlogin"}
     else:
         return json.dumps({'html':'<span>Enter the required fields</span>'}), {"Refresh": "2; /receptionistlogin"}
 
