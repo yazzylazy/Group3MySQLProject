@@ -205,7 +205,7 @@ def update():
             if field == 'dob':        
                 sql = "UPDATE userinformation SET dateofbirth=%s WHERE uid=%s"
             if field == 'phone':        
-                sql = "UPDATE userinformation SET phone=%s WHERE uid=%s"
+                sql = "UPDATE userinformation SET phonenumber=%s WHERE uid=%s"
             if field == 'gender':        
                 sql = "UPDATE userinformation SET gender=%s WHERE uid=%s"
             if field == 'email':        
